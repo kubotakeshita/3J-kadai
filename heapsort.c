@@ -1,0 +1,84 @@
+﻿/* アルゴリズムとデータ構造I */
+/* 課題9 3J13 久保隼人 */
+
+#include <stdio.h>
+#include <time.h>
+
+#define NUM 1000000
+
+int data[NUM];
+
+void Heap(int data[],int size,int idx){
+	int tmp;
+	if(2*idx+1<size){
+		if(data[idx]>data[2*idx+1]){
+			tmp=data[idx];
+			data[idx]=data[2*idx+1];
+			data[2*idx+1]=tmp;
+			Heap(data,size,2*idx+1);
+		}
+	}
+	if(2*idx+2<size){
+		if(data[idx]>data[2*idx+2]){
+			tmp=data[idx];
+			data[idx]=data[2*idx+2];
+			data[2*idx+2]=tmp;
+			Heap(data,size,2*idx+2);
+		}
+	}
+}
+
+int HeapSort(int data[], int size) {
+	int i,j,idx,tmp,count=0;
+	for(idx=size-1;idx>=0;idx--){
+		Heap(data,size,idx);
+	}
+	for(idx=size;idx>0;idx--){
+		Heap(data,idx,0);
+		tmp=data[0];
+		data[0]=data[idx-1];
+		data[idx-1]=tmp;
+	}
+	return count;
+} 
+
+int main(){
+    clock_t start, end;
+    FILE *fp;
+    char filename[256];
+    int i,size,count;
+    
+    printf("ファイル名を入力→");                            //ファイルを開く
+    gets(filename);                                          //1-サンプルデータ100万件.txt
+    fp = fopen(filename,"r");
+    if (fp==NULL) {
+        printf("can't open a file\n");
+        exit (1);
+    }
+    printf("読み込むデータ量を入力→");                      //読み込むデータ量を決める
+    scanf("%d",&size);
+    for(i=0;i<size;i++){
+        fscanf(fp,"%d",&data[i]);
+    }
+    fclose(fp);       
+    
+    printf("ソート前\n");
+    for(i=0;i<size;i++){
+        printf("%d\n",data[i]);
+    }
+    printf("\n");
+    
+    start = clock();
+    count = HeapSort(data, size);
+    end = clock();
+    
+    printf("ソート後\n");
+    for(i=0;i<size;i++){
+        printf("%d\n",data[i]);
+    }
+    
+    //printf("交換回数=%d",count);
+    printf("time=%d(ms)\n", end-start);
+    
+    return 0;
+}
